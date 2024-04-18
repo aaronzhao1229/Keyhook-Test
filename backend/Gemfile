@@ -4,6 +4,8 @@ gem 'activerecord'
 gem 'faker'
 gem 'graphiti'
 gem 'kaminari'
+gem 'rack-cors', require: 'rack/cors'
 gem 'rackup'
 gem 'sinatra'
+
 gem 'sqlite3', '~> 1.4.2'

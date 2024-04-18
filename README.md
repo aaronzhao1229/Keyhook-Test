@@ -10,7 +10,20 @@ We have prepared this small test as a way of checking how you can tackle some of
 
 We have provided you with a simple Sinatra.rb backend API that uses Graphiti. It holds 2 data models, Employees and Departments.
 
-In the frontend folder, we would like you to start a React js app, using Typescript. You are free to use any project starter tool that you'd like. We use vite for our app, but it is not required.
+To run the backend:
+
+```bash
+bundle install
+bundle exec rackup -p 4567
+```
+
+The frontend folder has a Typescript+React app ready to go, it is using vite for bundling / running the app.
+To run just:
+
+```
+yarn install
+yarn dev
+```
 
 The React app should be a single page ( no routing needed ), that satisfies the following criteria.
 
