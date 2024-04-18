@@ -1,3 +1,4 @@
+require 'faker'
 require 'active_record'
 require './seeds'
 require 'kaminari'
@@ -18,23 +19,24 @@ class EmployeeResource < ApplicationResource
   attribute :first_name, :string
   attribute :last_name, :string
   attribute :age, :integer
+  attribute :position, :string
 
-  has_many :positions
-end
+  attribute :department_id, :integer
 
-class PositionResource < ApplicationResource
-  attribute :employee_id, :integer, only: [:filterable]
-  attribute :department_id, :integer, only: [:filterable]
-  attribute :title, :string
-
-  belongs_to :employee
   belongs_to :department
+
+  filter :name, :string, single: true do
+    contains do |scope, value|
+      scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
+           .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
+    end
+  end
 end
 
 class DepartmentResource < ApplicationResource
   attribute :name, :string
 
-  has_many :positions
+  has_many :employees
 end
 
 Graphiti.setup!
@@ -49,7 +51,7 @@ class EmployeeDirectoryApp < Sinatra::Application
   end
 
   after do
-    ActiveRecord::Base.clear_active_connections!
+    ActiveRecord::Base.connection_handler.clear_active_connections!
   end
 
   get '/api/v1/employees' do
@@ -62,14 +64,9 @@ class EmployeeDirectoryApp < Sinatra::Application
     employees.to_jsonapi
   end
 
-  get '/api/v1/positions' do
-    positions = PositionResource.all(params)
-    positions.to_jsonapi
-  end
-
-  get '/api/v1/positions/:id' do
-    positions = PositionResource.find(params)
-    positions.to_jsonapi
+  get '/api/v1/departments' do
+    departments = DepartmentResource.all(params)
+    departments.to_jsonapi
   end
 
   get '/api/v1/departments/:id' do
