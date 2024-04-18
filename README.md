@@ -42,6 +42,8 @@ The React app should be a single page ( no routing needed ), that satisfies the 
 
 All sorting,paginating and filtering should happen through the server side query and should not be done on the frontend.
 
+Our app is entirely built on React hooks, so please be sure to use hooks and functional components instead of class components.
+
 You are free to use any other packages you would like to use to build the frontend.
 You are free to use any documentation or google anything you might not know.
 
