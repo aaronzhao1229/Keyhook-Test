@@ -1,14 +1,16 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender, ColumnFiltersState, getFilteredRowModel } from '@tanstack/react-table';
 
 import { apiResponse, Employee } from '../models/employee';
 import agent from '../api/agent';
+import { Filter } from './Filter';
 
 // const fallbackData: Employee[] = [];
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
     agent.Employees.getEmployees().then((employeesData) => {
@@ -21,91 +23,10 @@ const EmployeeTable: React.FC = () => {
       setError(error.message);
     })
   }, []);
+
   console.log(data)
 
-  // use columnHelper to define columns
-  // const columnHelper = createColumnHelper<Employee>();
   
-  //  const columns = useMemo(
-  //   () => [
-  //     columnHelper.accessor('first_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'First Name',
-  //       size: 20,
-  //     }),
-  //     columnHelper.accessor('last_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Last Name'
-  //     }),
-  //     columnHelper.accessor('age', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Age'
-  //     }),
-  //     columnHelper.accessor('position', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Position'
-  //     }),
-  //     columnHelper.accessor('department_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Department'
-  //     }),
-  //   ],
-  //   [columnHelper]
-  // );
-
-   //  const columns = useMemo(
-  //   () => [
-  //     columnHelper.accessor('first_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'First Name',
-  //       size: 20,
-  //     }),
-  //     columnHelper.accessor('last_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Last Name'
-  //     }),
-  //     columnHelper.accessor('age', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Age'
-  //     }),
-  //     columnHelper.accessor('position', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Position'
-  //     }),
-  //     columnHelper.accessor('department_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Department'
-  //     }),
-  //   ],
-  //   [columnHelper]
-  // );
-  
-  //  const columns = useMemo(
-  //   () => [
-  //     columnHelper.accessor('first_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'First Name',
-  //       size: 20,
-  //     }),
-  //     columnHelper.accessor('last_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Last Name'
-  //     }),
-  //     columnHelper.accessor('age', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Age'
-  //     }),
-  //     columnHelper.accessor('position', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Position'
-  //     }),
-  //     columnHelper.accessor('department_name', {
-  //       cell: (info) => info.getValue(),
-  //       header: () => 'Department'
-  //     }),
-  //   ],
-  //   [columnHelper]
-  // );
 
     const columns = useMemo(
     () => [
@@ -141,8 +62,12 @@ const EmployeeTable: React.FC = () => {
   const table = useReactTable({
     data,
     columns,
+    state:{
+      columnFilters
+    },
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-
+    getFilteredRowModel: getFilteredRowModel(),
      })
 
   if (loading) {
@@ -152,9 +77,10 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(table.getHeaderGroups())
+  console.log(columnFilters)
   return (
     <div className="p-4">
+      <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/>
       <table>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
