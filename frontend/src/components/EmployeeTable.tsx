@@ -1,26 +1,20 @@
 import React, { useMemo, useEffect, useState } from 'react';
-// import { useTable, useSortBy, usePagination } from '@tanstack/react-table';
+import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender } from '@tanstack/react-table';
 
-import { Employee } from '../models/employee';
+import { apiResponse, Employee } from '../models/employee';
 import agent from '../api/agent';
 
-
+// const fallbackData: Employee[] = [];
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // axios.get<Employee[]>('http://localhost:4567/api/v1/employees')
-    //   .then(response => {
-    //     setData(response.data);
-    //     setLoading(false);
-    //   })
-    //   .catch(error => {
-    //     setError(error.message);
-    //     setLoading(false);
-    //   });
-    agent.Employees.getEmployees().then((employees) => {
+    agent.Employees.getEmployees().then((employeesData) => {
+      const employees  = employeesData.data.map((employee : apiResponse) => {
+        return employee.attributes
+      })
       setData(employees);
       setLoading(false);
     }).catch((error) => {
@@ -28,51 +22,74 @@ const EmployeeTable: React.FC = () => {
     })
   }, []);
   console.log(data)
-  const columns = useMemo(
+  const columnHelper = createColumnHelper<Employee>();
+  
+   const columns = useMemo(
     () => [
-      {
-        Header: 'First Name',
-        accessor: 'first_name',
-      },
-      {
-        Header: 'Last Name',
-        accessor: 'last_name',
-      },
-      {
-        Header: 'Age',
-        accessor: 'age',
-      },
-      {
-        Header: 'Position',
-        accessor: 'position',
-      },
-      {
-        Header: 'Department Name',
-        accessor: 'department_name',
-      },
+      columnHelper.accessor('first_name', {
+        cell: (info) => info.getValue(),
+        header: () => 'First Name'
+      }),
+      columnHelper.accessor('last_name', {
+        cell: (info) => info.getValue(),
+        header: () => 'Last Name'
+      }),
+      columnHelper.accessor('age', {
+        cell: (info) => info.getValue(),
+        header: () => 'Age'
+      }),
+      columnHelper.accessor('position', {
+        cell: (info) => info.getValue(),
+        header: () => 'Position'
+      }),
+      columnHelper.accessor('department_name', {
+        cell: (info) => info.getValue(),
+        header: () => 'Department'
+      }),
     ],
-    []
+    [columnHelper]
   );
-
-  // const {
-  //   getTableProps,
-  //   getTableBodyProps,
-  //   headerGroups,
-  //   page,
-  //   nextPage,
-  //   previousPage,
-  //   canNextPage,
-  //   canPreviousPage,
-  //   prepareRow,
-  // } = useTable(
-  //   {
-  //     columns,
-  //     data,
-  //     initialState: { pageIndex: 0, pageSize: 10 }, // Set initial page size
-  //   },
-  //   useSortBy,
-  //   usePagination
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: 'id',
+  //       header: 'ID',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //     {
+  //       accessorKey: 'first_name',
+  //       header: 'First Name',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //     {
+  //       accessorKey: 'last_name',
+  //       header: 'Last Name',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //     {
+  //       accessorKey: 'age',
+  //       header: 'Age',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //     {
+  //       accessorKey: 'position',
+  //       header: 'Position',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //     {
+  //       accessorKey: 'department_name',
+  //       header: 'Department Name',
+  //       cell: (props) => <p>{props.getValus()}</p>
+  //     },
+  //   ],
+  //   []
   // );
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+
+     })
 
   if (loading) {
     return <div>Loading...</div>;
@@ -84,52 +101,36 @@ const EmployeeTable: React.FC = () => {
 
   return (
     <div className="p-4">
-
-      {/* <table {...getTableProps()} className="min-w-full bg-white">
+      <table>
         <thead>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="px-4 py-2 text-left bg-gray-100"
-                >
-                  {column.render('Header')}
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map(row => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => (
-                  <td {...cell.getCellProps()} className="px-4 py-2 border-t">
-                    {cell.render('Cell')}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
         </tbody>
+       
       </table>
-      <div className="flex justify-between mt-4">
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          Previous
-        </button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          Next
-        </button>
-      </div> */}
     </div>
   );
 };
