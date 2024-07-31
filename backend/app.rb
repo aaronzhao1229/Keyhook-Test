@@ -48,6 +48,8 @@ class EmployeeDirectoryApp < Sinatra::Application
 
   before do
     content_type :jsonapi
+    # print some changes
+    puts "Request12334: #{request.request_method} #{request.path}"
   end
 
   after do

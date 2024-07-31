@@ -9,6 +9,11 @@ We have prepared this small test as a way of checking how you can tackle some of
 ### Task
 
 We have provided you with a simple Sinatra.rb backend API that uses Graphiti. It holds 2 data models, Employees and Departments.
+The backend will seed itself with data the first time you run it.
+
+Please note that if you are using a Windows machine, you may run into issues with the sqlite3 gem.
+We recommend either using a Mac or Linux machine to complete the test. Or spinning up an Linux VM ( such as ubuntu ) on your PC.
+You may also consider using a docker container to run the backend if you have experience with docker.
 
 To run the backend:
 
@@ -73,3 +78,7 @@ Note that you will need to add in code into the Graphiti resource to make this w
 - [Spraypaint.js](https://www.graphiti.dev/js)
 - [Tanstack Table](https://tanstack.com/table/v7)
 - [Tailwind.css](https://tailwindcss.com/)
+
+### Contact
+
+If you have any questions or if anything needs clarifying, please contact me at aaron.rama@keyhook.com
