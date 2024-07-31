@@ -46,6 +46,9 @@ unless seeded
     Department.create!(name: 'IT')
   ]
 
+  # Reload departments from the database to ensure IDs are populated
+  departments = Department.all.to_a
+
   1000.times do
     Employee.create!(
       first_name: Faker::Name.first_name,
