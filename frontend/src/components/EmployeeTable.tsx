@@ -22,68 +22,122 @@ const EmployeeTable: React.FC = () => {
     })
   }, []);
   console.log(data)
-  const columnHelper = createColumnHelper<Employee>();
+
+  // use columnHelper to define columns
+  // const columnHelper = createColumnHelper<Employee>();
   
-   const columns = useMemo(
-    () => [
-      columnHelper.accessor('first_name', {
-        cell: (info) => info.getValue(),
-        header: () => 'First Name'
-      }),
-      columnHelper.accessor('last_name', {
-        cell: (info) => info.getValue(),
-        header: () => 'Last Name'
-      }),
-      columnHelper.accessor('age', {
-        cell: (info) => info.getValue(),
-        header: () => 'Age'
-      }),
-      columnHelper.accessor('position', {
-        cell: (info) => info.getValue(),
-        header: () => 'Position'
-      }),
-      columnHelper.accessor('department_name', {
-        cell: (info) => info.getValue(),
-        header: () => 'Department'
-      }),
-    ],
-    [columnHelper]
-  );
-  // const columns = useMemo(
+  //  const columns = useMemo(
   //   () => [
-  //     {
-  //       accessorKey: 'id',
-  //       header: 'ID',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
-  //     {
-  //       accessorKey: 'first_name',
-  //       header: 'First Name',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
-  //     {
-  //       accessorKey: 'last_name',
-  //       header: 'Last Name',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
-  //     {
-  //       accessorKey: 'age',
-  //       header: 'Age',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
-  //     {
-  //       accessorKey: 'position',
-  //       header: 'Position',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
-  //     {
-  //       accessorKey: 'department_name',
-  //       header: 'Department Name',
-  //       cell: (props) => <p>{props.getValus()}</p>
-  //     },
+  //     columnHelper.accessor('first_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'First Name',
+  //       size: 20,
+  //     }),
+  //     columnHelper.accessor('last_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Last Name'
+  //     }),
+  //     columnHelper.accessor('age', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Age'
+  //     }),
+  //     columnHelper.accessor('position', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Position'
+  //     }),
+  //     columnHelper.accessor('department_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Department'
+  //     }),
   //   ],
-  //   []
+  //   [columnHelper]
   // );
+
+   //  const columns = useMemo(
+  //   () => [
+  //     columnHelper.accessor('first_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'First Name',
+  //       size: 20,
+  //     }),
+  //     columnHelper.accessor('last_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Last Name'
+  //     }),
+  //     columnHelper.accessor('age', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Age'
+  //     }),
+  //     columnHelper.accessor('position', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Position'
+  //     }),
+  //     columnHelper.accessor('department_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Department'
+  //     }),
+  //   ],
+  //   [columnHelper]
+  // );
+  
+  //  const columns = useMemo(
+  //   () => [
+  //     columnHelper.accessor('first_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'First Name',
+  //       size: 20,
+  //     }),
+  //     columnHelper.accessor('last_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Last Name'
+  //     }),
+  //     columnHelper.accessor('age', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Age'
+  //     }),
+  //     columnHelper.accessor('position', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Position'
+  //     }),
+  //     columnHelper.accessor('department_name', {
+  //       cell: (info) => info.getValue(),
+  //       header: () => 'Department'
+  //     }),
+  //   ],
+  //   [columnHelper]
+  // );
+
+    const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'first_name',
+        header: 'First Name',
+        cell: (props) => <p>{props.getValue()}</p>,
+      },
+      {
+        accessorKey: 'last_name',
+        header: 'Last Name',
+        cell: (props) => <p>{props.getValue()}</p>,
+      },
+      {
+        accessorKey: 'age',
+        header: 'Age',
+        cell: (props) => <p>{props.getValue()}</p>,
+      },
+      {
+        accessorKey: 'position',
+        header: 'Position',
+        cell: (props) => <p>{props.getValue()}</p>,
+      },
+      {
+        accessorKey: 'department_name',
+        header: 'Department',
+        cell: (props) => <p>{props.getValue()}</p>,
+      },
+    ],
+    []
+  );
+  
   const table = useReactTable({
     data,
     columns,
@@ -98,7 +152,7 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
+  console.log(table.getHeaderGroups())
   return (
     <div className="p-4">
       <table>
