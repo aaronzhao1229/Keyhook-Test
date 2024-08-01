@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender, ColumnFiltersState, getFilteredRowModel } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
 
 import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
@@ -14,33 +14,27 @@ const EmployeeTable: React.FC = () => {
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
+
+  const fetchEmployees = (params: EmployeeParams) => {
+      const axiosParams = getAxiosParams(params);
+      agent.Employees.getEmployees(axiosParams)
+        .then((employeesData) => {
+          const employees = employeesData.data.map((employee: apiResponse) => employee.attributes);
+          setData(employees);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
+    };
+  
   const handleFilterChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
-    const params = getAxiosParams({...employeePramas, 'filter[name]': e.target.value})
-    agent.Employees.getEmployees(params).then((employeesData) => {
-      const employees  = employeesData.data.map((employee : apiResponse) => {
-       
-        return employee.attributes
-      })
-      setData(employees);
-      setLoading(false);
-    }).catch((error) => {
-      setError(error.message);
-    })
+    fetchEmployees({...employeePramas, 'filter[name]': e.target.value})
   }
 
   useEffect(() => {
-    const params = getAxiosParams({'filter[name]': 'da', 'sort': 'age', 'page[number]': 2, 'include': 'department'})
-    agent.Employees.getEmployees(params).then((employeesData) => {
-      const employees  = employeesData.data.map((employee : apiResponse) => {
-       
-        return employee.attributes
-      })
-      setData(employees);
-      setLoading(false);
-    }).catch((error) => {
-      setError(error.message);
-    })
+    fetchEmployees({include: 'department'})
+    setLoading(false)
   }, []);
 
   console.log(data)
