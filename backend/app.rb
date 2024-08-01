@@ -39,7 +39,6 @@ class EmployeeResource < ApplicationResource
 
   sort :first_name, :last_name, :age, :position
   paginate
-
   
 end
 
@@ -65,8 +64,8 @@ class EmployeeDirectoryApp < Sinatra::Application
   end
 
   get '/api/v1/employees' do
-    puts params
     employees = EmployeeResource.all(params)
+    puts "Pagination Meta: #{employees.meta.to_json}" # Debugging output to verify meta data
     employees.to_jsonapi
    
   end

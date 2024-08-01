@@ -5,7 +5,7 @@ import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
-import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { ArrowsUpDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 
 const EmployeeTable: React.FC = () => {
@@ -13,17 +13,18 @@ const EmployeeTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([])
-  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 })
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20 })
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
 
-  const fetchEmployees = (params: EmployeeParams) => {
+  const fetchEmployees = async (params: EmployeeParams) => {
       const axiosParams = getAxiosParams(params);
-      agent.Employees.getEmployees(axiosParams)
+      return agent.Employees.getEmployees(axiosParams)
         .then((employeesData) => {
           const employees = employeesData.data.map((employee: apiResponse) => employee.attributes);
           setData(employees);
+          return employees
         })
         .catch((error) => {
           setError(error.message);
@@ -87,7 +88,9 @@ const EmployeeTable: React.FC = () => {
     },
     getCoreRowModel: getCoreRowModel(),
     // getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
+    manualPagination: true,
+    pageCount:50,
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
      })
@@ -100,13 +103,20 @@ const EmployeeTable: React.FC = () => {
     }
     else {
       const {sort, ...newValues} = employeePramas
-      console.log(newValues)
       setEmployeePramas(newValues)
       fetchEmployees(newValues)
     }
     }, [table.getState().sorting]);
 
-  console.log(table.getState().pagination.pageIndex + 1)
+  useEffect(() => {
+    const pageIndex = table.getState().pagination.pageIndex + 1
+    if (pageIndex !== employeePramas['page[number]']) {
+      console.log(table.getState().pagination.pageIndex + 1)
+      setEmployeePramas(prev => ({...prev, 'page[number]': pageIndex}))
+      fetchEmployees({...employeePramas, 'page[number]': pageIndex})
+    }
+    }, [table.getState().pagination.pageIndex]);
+  
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -116,14 +126,15 @@ const EmployeeTable: React.FC = () => {
   }
   
   return (
-    <div className="p-4">
+    <div className="p-4 w-full flex flex-col">
       <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
-      <table>
+      <table className='table-auto border-collapse border border-slate-400'>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map(header => (
-                <th key={header.id}>
+                <th key={header.id} className='border border-slate-300'>
+                  <div className='flex items-center justify-center gap-2'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -132,11 +143,11 @@ const EmployeeTable: React.FC = () => {
                       )}
                       {header.column.getCanSort() && <ArrowsUpDownIcon width={20} onClick={header.column.getToggleSortingHandler()
                       }/>}
-                     {{
+                      {{
                           asc: ' 🔼',
                           desc: ' 🔽',
                         }[header.column.getIsSorted() as string] ?? null}
-
+                  </div>
                 </th>
               ))}
             </tr>
@@ -146,21 +157,24 @@ const EmployeeTable: React.FC = () => {
           {table.getRowModel().rows.map(row => (
             <tr key={row.id}>
               {row.getVisibleCells().map(cell => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                <td key={cell.id} className='border border-slate-300'>
+                  <div className='flex items-center justify-center'>{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
-      <p>
+      <div>
+        <p>
         Page 
         {table.getState().pagination.pageIndex + 1} of 
         {table.getPageCount()}
-      </p>
-      <button onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
-      <button onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
+        </p>
+        <button onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
+        <button onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
+      </div>
+      
     </div>
   );
 };
