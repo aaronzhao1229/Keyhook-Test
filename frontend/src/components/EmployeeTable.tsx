@@ -7,6 +7,8 @@ import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
 import { ArrowsUpDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { Department, DepartmentIdAndName } from '../models/department';
+import { Select } from '@headlessui/react';
+import { Dropdown } from './Dropdown';
 
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
@@ -14,11 +16,15 @@ const EmployeeTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([])
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>('');
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20 })
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
-
+  const handleSelectedDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDepartmentId(e.target.value)
+    console.log(e.target.value)
+  }
   // fetch employees data with params
   const fetchEmployees = async (params: EmployeeParams) => {
       const axiosParams = getAxiosParams(params);
@@ -55,8 +61,6 @@ const EmployeeTable: React.FC = () => {
     fetchDepartments()
     setLoading(false)
   }, []);
-
-  console.log(departments)
 
   
   // define columns
@@ -140,6 +144,7 @@ const EmployeeTable: React.FC = () => {
   return (
     <div className="px-16 py-8 w-full flex flex-col">
       <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
+      <Dropdown options={[{id: '0', name: 'Filter by department'}, ...departments]}  handleSelectChange={handleSelectedDepartmentChange}/>
       <table className='table-auto border-collapse border border-slate-400'>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (

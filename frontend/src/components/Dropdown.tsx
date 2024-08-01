@@ -1,0 +1,44 @@
+import { Field, Label, Select } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import clsx from 'clsx'
+
+import { DepartmentIdAndName } from '../models/department'
+
+interface Props {
+  options: DepartmentIdAndName[],
+  handleSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+ 
+}
+export const Dropdown = ({options, handleSelectChange}: Props) => {
+  
+
+    return (
+      <div className="w-full max-w-96 px-4">
+        <Field>
+          {/* <Label className="text-sm/6 font-medium text-slate-300">Project status</Label> */}
+          <div className="relative rounded-lg">
+            <Select
+              className={clsx(
+                'mt-3 block w-full appearance-none rounded-lg border bg-white/5 py-1.5 px-3 text-sm/6',
+                'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
+                // Make the text of each option black on Windows
+                '*:text-black'
+              )}
+              onChange={handleSelectChange} // Handle change event
+              
+            >
+              {options.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </Select>
+            <ChevronDownIcon
+              className="group pointer-events-none absolute top-2.5 right-2.5 size-4 fill-white/60"
+              aria-hidden="true"
+            />
+          </div>
+        </Field>
+      </div>
+  )
+}
