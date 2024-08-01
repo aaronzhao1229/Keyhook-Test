@@ -108,18 +108,17 @@ const EmployeeTable: React.FC = () => {
     // pagination
     const pageIndex = table.getState().pagination.pageIndex + 1
     if (pageIndex !== employeePramas['page[number]']) {
-      console.log(table.getState().pagination.pageIndex + 1)
       setEmployeePramas(prev => ({...prev, 'page[number]': pageIndex}))
       fetchEmployees({...employeePramas, 'page[number]': pageIndex})
     }
     }, [table.getState().pagination.pageIndex]);
   
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className='flex justify-center mt-16'>Loading...</div>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className='flex justify-center mt-16'>{error} {'. Please contact the developer.'}</div>;
   }
   
   return (
@@ -168,8 +167,8 @@ const EmployeeTable: React.FC = () => {
         <p className='text-sm mb-2'>
         Page {' '} {table.getState().pagination.pageIndex + 1} of {' '} {table.getPageCount()}
         </p>
-        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer' onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
-        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer' onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
+        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200' onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
+        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer hover:bg-slate-200' onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
       </div>
       
     </div>

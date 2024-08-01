@@ -65,7 +65,6 @@ class EmployeeDirectoryApp < Sinatra::Application
 
   get '/api/v1/employees' do
     employees = EmployeeResource.all(params)
-    puts "Pagination Meta: #{employees.meta.to_json}" # Debugging output to verify meta data
     employees.to_jsonapi
    
   end
