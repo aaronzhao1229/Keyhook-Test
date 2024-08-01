@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel, SortingState, getPaginationRowModel, PaginationState } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, flexRender, SortingState, PaginationState } from '@tanstack/react-table';
 
 import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
@@ -18,6 +18,7 @@ const EmployeeTable: React.FC = () => {
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
 
+  // fetch employees data with params
   const fetchEmployees = async (params: EmployeeParams) => {
       const axiosParams = getAxiosParams(params);
       return agent.Employees.getEmployees(axiosParams)
@@ -36,17 +37,13 @@ const EmployeeTable: React.FC = () => {
     fetchEmployees({...employeePramas, 'filter[name]': e.target.value})
   }
 
-  
-
   useEffect(() => {
     fetchEmployees({include: 'department'})
     setLoading(false)
   }, []);
 
-  console.log(data)
-
   
-
+  // define columns
     const columns = useMemo(
     () => [
       {
@@ -87,8 +84,6 @@ const EmployeeTable: React.FC = () => {
       pagination
     },
     getCoreRowModel: getCoreRowModel(),
-    // getSortedRowModel: getSortedRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
     manualPagination: true,
     pageCount:50,
     onSortingChange: setSorting,
@@ -96,6 +91,7 @@ const EmployeeTable: React.FC = () => {
      })
 
   useEffect(() => {
+    // sorting 
     if (table.getState().sorting.length > 0) {
       const sortId = table.getState().sorting[0].desc ? '-' + table.getState().sorting[0].id : table.getState().sorting[0].id
       setEmployeePramas(prev => ({...prev, sort: sortId}))
@@ -109,6 +105,7 @@ const EmployeeTable: React.FC = () => {
     }, [table.getState().sorting]);
 
   useEffect(() => {
+    // pagination
     const pageIndex = table.getState().pagination.pageIndex + 1
     if (pageIndex !== employeePramas['page[number]']) {
       console.log(table.getState().pagination.pageIndex + 1)
@@ -126,22 +123,22 @@ const EmployeeTable: React.FC = () => {
   }
   
   return (
-    <div className="p-4 w-full flex flex-col">
+    <div className="px-16 py-8 w-full flex flex-col">
       <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
       <table className='table-auto border-collapse border border-slate-400'>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map(header => (
-                <th key={header.id} className='border border-slate-300'>
-                  <div className='flex items-center justify-center gap-2'>
+                <th key={header.id} className='border border-slate-300 bg-slate-100 py-2'>
+                  <div className='flex items-center justify-center'>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      {header.column.getCanSort() && <ArrowsUpDownIcon width={20} onClick={header.column.getToggleSortingHandler()
+                      {header.column.getCanSort() && <ArrowsUpDownIcon className={'mx-2 hover:cursor-pointer text-slate-500'} width={20} onClick={header.column.getToggleSortingHandler()
                       }/>}
                       {{
                           asc: ' 🔼',
@@ -165,14 +162,14 @@ const EmployeeTable: React.FC = () => {
           ))}
         </tbody>
       </table>
-      <div>
-        <p>
-        Page 
-        {table.getState().pagination.pageIndex + 1} of 
-        {table.getPageCount()}
+
+      {/* pagination */}
+      <div className='my-4'>
+        <p className='text-sm mb-2'>
+        Page {' '} {table.getState().pagination.pageIndex + 1} of {' '} {table.getPageCount()}
         </p>
-        <button onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
-        <button onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
+        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer' onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
+        <button className='mr-2 border border-slate-300 rounded hover:cursor-pointer' onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
       </div>
       
     </div>
