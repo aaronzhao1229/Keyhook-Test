@@ -19,7 +19,6 @@ const EmployeeTable: React.FC = () => {
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
-  
   // fetch employees data with params
   const fetchEmployees = async (params: EmployeeParams) => {
       const axiosParams = getAxiosParams(params);
@@ -51,7 +50,7 @@ const EmployeeTable: React.FC = () => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
     fetchEmployees({...employeePramas, 'filter[name]': e.target.value})
   }
-  
+
   // handle filter by department
   const handleSelectedDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (e.target.value !== '0') {
@@ -152,8 +151,11 @@ const EmployeeTable: React.FC = () => {
   
   return (
     <div className="px-16 py-8 w-full flex flex-col">
-      <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
-      <Dropdown options={[{id: '0', name: 'Filter by department'}, ...departments]}  handleSelectChange={handleSelectedDepartmentChange}/>
+      <div className='flex justify-between'>
+        <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
+        <Dropdown options={[{id: '0', name: 'Filter by department'}, ...departments]}  handleSelectChange={handleSelectedDepartmentChange}/>
+      </div>
+      
       <table className='table-auto border-collapse border border-slate-400'>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (

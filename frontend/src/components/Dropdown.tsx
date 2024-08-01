@@ -1,4 +1,4 @@
-import { Field, Label, Select } from '@headlessui/react'
+import { Field, Select } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
 
@@ -13,9 +13,8 @@ export const Dropdown = ({options, handleSelectChange}: Props) => {
   
 
     return (
-      <div className="w-full max-w-96 px-4">
+      <div className="w-full w-96 px-4 mb-4">
         <Field>
-          {/* <Label className="text-sm/6 font-medium text-slate-300">Project status</Label> */}
           <div className="relative rounded-lg">
             <Select
               className={clsx(
