@@ -1,16 +1,18 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useReactTable, getCoreRowModel, flexRender } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel, SortingState } from '@tanstack/react-table';
 
 import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
+import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon } from '@heroicons/react/24/outline';
 
-// const fallbackData: Employee[] = [];
+
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [sorting, setSorting] = useState<SortingState>([])
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
@@ -31,6 +33,8 @@ const EmployeeTable: React.FC = () => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
     fetchEmployees({...employeePramas, 'filter[name]': e.target.value})
   }
+
+  
 
   useEffect(() => {
     fetchEmployees({include: 'department'})
@@ -67,6 +71,7 @@ const EmployeeTable: React.FC = () => {
         accessorKey: 'department_name',
         header: 'Department',
         cell: (props) => <p>{props.getValue()}</p>,
+        enableSorting: false
       },
     ],
     []
@@ -76,11 +81,12 @@ const EmployeeTable: React.FC = () => {
     data,
     columns,
     state:{
-      
+      sorting
     },
    
     getCoreRowModel: getCoreRowModel(),
-   
+    // getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
      })
 
   if (loading) {
@@ -90,6 +96,8 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  console.log(table.getState().sorting)
   
   return (
     <div className="p-4">
@@ -106,6 +114,13 @@ const EmployeeTable: React.FC = () => {
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                      {header.column.getCanSort() && <ArrowsUpDownIcon width={20} onClick={header.column.getToggleSortingHandler()
+                      }/>}
+                     {{
+                          asc: ' 🔼',
+                          desc: ' 🔽',
+                        }[header.column.getIsSorted() as string] ?? null}
+
                 </th>
               ))}
             </tr>
