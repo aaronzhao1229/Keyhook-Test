@@ -9,12 +9,11 @@ const requests = {
 }
 
 const Employees = {
-  getEmployees: (params: URLSearchParams) =>  
-   requests.get(`employees`, params),
+  getEmployees: (params: URLSearchParams) => requests.get(`employees`, params),
 }
 
 const agent = {
- Employees
+  Employees
 }
 
 export default agent
