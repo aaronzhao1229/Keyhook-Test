@@ -32,7 +32,7 @@ class EmployeeResource < ApplicationResource
     end
   end
 
-  sort :first_name, :last_name, :age
+  sort :first_name, :last_name, :age, :position
 end
 
 class DepartmentResource < ApplicationResource
