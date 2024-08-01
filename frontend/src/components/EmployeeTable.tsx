@@ -1,11 +1,11 @@
 import React, { useMemo, useEffect, useState } from 'react';
-import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel, SortingState } from '@tanstack/react-table';
+import { useReactTable, getCoreRowModel, flexRender, getSortedRowModel, SortingState, getPaginationRowModel, PaginationState } from '@tanstack/react-table';
 
 import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
-import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon } from '@heroicons/react/24/outline';
+import { ArrowsUpDownIcon, BarsArrowDownIcon, BarsArrowUpIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 
 const EmployeeTable: React.FC = () => {
@@ -13,6 +13,7 @@ const EmployeeTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([])
+  const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 5 })
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
 
@@ -81,12 +82,14 @@ const EmployeeTable: React.FC = () => {
     data,
     columns,
     state:{
-      sorting
+      sorting,
+      pagination
     },
-   
     getCoreRowModel: getCoreRowModel(),
     // getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
+    onPaginationChange: setPagination,
      })
 
   useEffect(() => {
@@ -102,6 +105,8 @@ const EmployeeTable: React.FC = () => {
       fetchEmployees(newValues)
     }
     }, [table.getState().sorting]);
+
+  console.log(table.getState().pagination.pageIndex + 1)
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -148,8 +153,14 @@ const EmployeeTable: React.FC = () => {
             </tr>
           ))}
         </tbody>
-       
       </table>
+      <p>
+        Page 
+        {table.getState().pagination.pageIndex + 1} of 
+        {table.getPageCount()}
+      </p>
+      <button onClick={table.previousPage} disabled={!table.getCanPreviousPage()}><ChevronLeftIcon width={20}/></button>
+      <button onClick={table.nextPage} disabled={!table.getCanNextPage()}><ChevronRightIcon width={20}/></button>
     </div>
   );
 };
