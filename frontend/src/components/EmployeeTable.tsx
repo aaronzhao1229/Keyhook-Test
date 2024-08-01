@@ -11,9 +11,8 @@ const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
-  console.log(employeePramas)
 
   const handleFilterChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
@@ -83,11 +82,11 @@ const EmployeeTable: React.FC = () => {
     data,
     columns,
     state:{
-      columnFilters
+      
     },
-    onColumnFiltersChange: setColumnFilters,
+   
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+   
      })
 
   if (loading) {
@@ -97,20 +96,10 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  // console.log(columnFilters)
+  
   return (
     <div className="p-4">
-      {/* <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/> */}
-      <div>
-        <input
-          type="text"
-          id='filter[name]'
-          value={employeePramas["filter[name]"] || ''}
-          onChange={handleFilterChange}
-          placeholder="Search name..."
-          className="mb-4 p-2 border rounded w-full"
-          />
-        </div>
+      <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
       <table>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
