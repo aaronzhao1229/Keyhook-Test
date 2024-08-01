@@ -7,7 +7,6 @@ import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
 import { ArrowsUpDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);

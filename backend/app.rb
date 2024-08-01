@@ -37,6 +37,7 @@ class EmployeeResource < ApplicationResource
     end
   end
 
+  # add custom sorting and pagination
   sort :first_name, :last_name, :age, :position
   paginate
   
