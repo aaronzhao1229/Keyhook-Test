@@ -14,7 +14,7 @@ const EmployeeTable: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
-    const params = getAxiosParams({'filter[name]': 'da', 'sort': 'age'})
+    const params = getAxiosParams({'filter[name]': 'da', 'sort': 'age', 'page[number]': 2})
     agent.Employees.getEmployees(params).then((employeesData) => {
       const employees  = employeesData.data.map((employee : apiResponse) => {
         return employee.attributes

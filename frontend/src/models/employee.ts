@@ -37,4 +37,5 @@ export interface Employee {
 export interface EmployeeParams {
   'filter[name]': string
   'sort': string
+  'page[number]': number
 }
