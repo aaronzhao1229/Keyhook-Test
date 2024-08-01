@@ -33,3 +33,7 @@ export interface Employee {
   position: string;
   department_name: string;
 }
+
+export interface EmployeeParams {
+  'filter[name]': string
+}

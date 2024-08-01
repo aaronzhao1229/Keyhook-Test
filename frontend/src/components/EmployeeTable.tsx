@@ -4,6 +4,7 @@ import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender, Column
 import { apiResponse, Employee } from '../models/employee';
 import agent from '../api/agent';
 import { Filter } from './Filter';
+import { getAxiosParams } from '../api/helper';
 
 // const fallbackData: Employee[] = [];
 const EmployeeTable: React.FC = () => {
@@ -13,7 +14,8 @@ const EmployeeTable: React.FC = () => {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   useEffect(() => {
-    agent.Employees.getEmployees().then((employeesData) => {
+    const params = getAxiosParams({'filter[name]': 'da'})
+    agent.Employees.getEmployees(params).then((employeesData) => {
       const employees  = employeesData.data.map((employee : apiResponse) => {
         return employee.attributes
       })
@@ -77,7 +79,7 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-  console.log(columnFilters)
+  // console.log(columnFilters)
   return (
     <div className="p-4">
       <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/>

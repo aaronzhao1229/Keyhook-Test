@@ -10,9 +10,8 @@ const requests = {
 }
 
 const Employees = {
-  getEmployees: () =>  
-   
-   requests.get("employees")
+  getEmployees: (params: URLSearchParams) =>  
+   requests.get(`employees`, params),
     
 }
 

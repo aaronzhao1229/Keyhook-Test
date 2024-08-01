@@ -26,7 +26,7 @@ class EmployeeResource < ApplicationResource
   belongs_to :department
 
   filter :name, :string, single: true do
-    contains do |scope, value|
+    eq do |scope, value|
       scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
            .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
     end
@@ -55,6 +55,7 @@ class EmployeeDirectoryApp < Sinatra::Application
   end
 
   get '/api/v1/employees' do
+    puts params
     employees = EmployeeResource.all(params)
     employees.to_jsonapi
    
