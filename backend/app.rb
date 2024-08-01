@@ -31,6 +31,8 @@ class EmployeeResource < ApplicationResource
            .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
     end
   end
+
+  sort :first_name, :last_name, :age
 end
 
 class DepartmentResource < ApplicationResource
