@@ -23,14 +23,24 @@ class EmployeeResource < ApplicationResource
 
   attribute :department_id, :integer
 
+  # Custom attribute to include the department name directly in the employee's attributes
+  attribute :department_name, :string do
+    @object.department.name if @object.department
+  end
+
   belongs_to :department
 
   filter :name, :string, single: true do
-    contains do |scope, value|
+    eq do |scope, value|
       scope.where('LOWER(first_name) LIKE ?', "%#{value.downcase}%")
            .or(scope.where('LOWER(last_name) LIKE ?', "%#{value.downcase}%"))
     end
   end
+
+  # add custom sorting and pagination
+  sort :first_name, :last_name, :age, :position
+  paginate
+  
 end
 
 class DepartmentResource < ApplicationResource
@@ -57,6 +67,7 @@ class EmployeeDirectoryApp < Sinatra::Application
   get '/api/v1/employees' do
     employees = EmployeeResource.all(params)
     employees.to_jsonapi
+   
   end
 
   get '/api/v1/employees/:id' do
