@@ -6,13 +6,19 @@ interface Props {
 }
 
 export const Filter = ({employeePramas, handleFilterChange}: Props) => {
-  return  <input
-              type="text"
-              id='filter[name]'
-              value={employeePramas["filter[name]"] || ''}
-              onChange={handleFilterChange}
-              placeholder={`Search name...`}
-              className="mb-4 p-2 w-96 border rounded"
-              />
+  
+  return  (
+  <div className="max-w-96 flex items-center">
+      <input
+        type="text"
+        id='filter[name]'
+        value={employeePramas["filter[name]"] || ''}
+        onChange={handleFilterChange}
+        placeholder={`Search name...`}
+        className="p-2 w-full border rounded-lg h-10"
+        />
+  </div>
+  )
+  
        
 }

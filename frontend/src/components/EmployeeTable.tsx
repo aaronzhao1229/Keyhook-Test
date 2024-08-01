@@ -6,16 +6,18 @@ import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
 import { ArrowsUpDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Department, DepartmentIdAndName } from '../models/department';
+import { Dropdown } from './Dropdown';
 
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
+  const [departments, setDepartments] = useState<DepartmentIdAndName[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([])
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 20 })
   
   const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
-
 
   // fetch employees data with params
   const fetchEmployees = async (params: EmployeeParams) => {
@@ -30,14 +32,41 @@ const EmployeeTable: React.FC = () => {
           setError(error.message);
         });
     };
+
+    const fetchDepartments =  () => {
+      
+      agent.Departments.getDepartments()
+        .then((departmentsData) => {
+          const departmentIdsAndNames : DepartmentIdAndName[] = departmentsData.data.map((department: Department) => {return {id: department.id, name: department.attributes.name}});
+          setDepartments(departmentIdsAndNames);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
+    };
   
+  // handle search by name
   const handleFilterChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
     fetchEmployees({...employeePramas, 'filter[name]': e.target.value})
   }
 
+  // handle filter by department
+  const handleSelectedDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (e.target.value !== '0') {
+    setEmployeePramas(prev => ({...prev, 'filter[department_id]': e.target.value}))
+    fetchEmployees({...employeePramas, 'filter[department_id]': e.target.value})
+    } else {
+      const newState = {...employeePramas}
+      delete newState['filter[department_id]']
+      setEmployeePramas(newState)
+      fetchEmployees(newState)
+    }
+  }
+
   useEffect(() => {
     fetchEmployees({include: 'department'})
+    fetchDepartments()
     setLoading(false)
   }, []);
 
@@ -122,7 +151,11 @@ const EmployeeTable: React.FC = () => {
   
   return (
     <div className="px-16 py-8 w-full flex flex-col">
-      <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
+      <div className='flex justify-left'>
+        <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
+        <Dropdown options={[{id: '0', name: 'Filter by department'}, ...departments]}  handleSelectChange={handleSelectedDepartmentChange}/>
+      </div>
+      
       <table className='table-auto border-collapse border border-slate-400'>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
