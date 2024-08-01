@@ -151,7 +151,7 @@ const EmployeeTable: React.FC = () => {
   
   return (
     <div className="px-16 py-8 w-full flex flex-col">
-      <div className='flex justify-between'>
+      <div className='flex justify-left'>
         <Filter employeePramas={employeePramas} handleFilterChange={handleFilterChange}/>
         <Dropdown options={[{id: '0', name: 'Filter by department'}, ...departments]}  handleSelectChange={handleSelectedDepartmentChange}/>
       </div>

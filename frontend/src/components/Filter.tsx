@@ -15,7 +15,7 @@ export const Filter = ({employeePramas, handleFilterChange}: Props) => {
         value={employeePramas["filter[name]"] || ''}
         onChange={handleFilterChange}
         placeholder={`Search name...`}
-        className="p-2 w-full border rounded h-10"
+        className="p-2 w-full border rounded-lg h-10"
         />
   </div>
   )

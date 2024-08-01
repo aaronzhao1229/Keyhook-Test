@@ -13,12 +13,12 @@ export const Dropdown = ({options, handleSelectChange}: Props) => {
   
 
     return (
-      <div className="w-full w-96 px-4 mb-4">
+      <div className="w-full max-w-96 px-4 mb-3">
         <Field>
           <div className="relative rounded-lg">
             <Select
               className={clsx(
-                'mt-3 block w-full appearance-none rounded-lg border bg-white/5 py-1.5 px-3 text-sm/6',
+                'mt-3 h-10 block w-full appearance-none rounded-lg border bg-white/5 py-1.5 px-3 text-sm/6',
                 'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
                 // Make the text of each option black on Windows
                 '*:text-black'
