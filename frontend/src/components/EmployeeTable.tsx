@@ -89,6 +89,19 @@ const EmployeeTable: React.FC = () => {
     onSortingChange: setSorting,
      })
 
+  useEffect(() => {
+    if (table.getState().sorting.length > 0) {
+      const sortId = table.getState().sorting[0].desc ? '-' + table.getState().sorting[0].id : table.getState().sorting[0].id
+      setEmployeePramas(prev => ({...prev, sort: sortId}))
+      fetchEmployees({...employeePramas, sort: sortId})
+    }
+    else {
+      const {sort, ...newValues} = employeePramas
+      console.log(newValues)
+      setEmployeePramas(newValues)
+      fetchEmployees(newValues)
+    }
+    }, [table.getState().sorting]);
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -96,8 +109,6 @@ const EmployeeTable: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
-  console.log(table.getState().sorting)
   
   return (
     <div className="p-4">
