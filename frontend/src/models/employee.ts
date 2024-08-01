@@ -38,4 +38,5 @@ export interface EmployeeParams {
   'filter[name]': string
   'sort': string
   'page[number]': number
+  'include': string
 }

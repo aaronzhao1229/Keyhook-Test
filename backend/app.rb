@@ -23,6 +23,11 @@ class EmployeeResource < ApplicationResource
 
   attribute :department_id, :integer
 
+  # Custom attribute to include the department name directly in the employee's attributes
+  attribute :department_name, :string do
+    @object.department.name if @object.department
+  end
+
   belongs_to :department
 
   filter :name, :string, single: true do
@@ -34,6 +39,8 @@ class EmployeeResource < ApplicationResource
 
   sort :first_name, :last_name, :age, :position
   paginate
+
+  
 end
 
 class DepartmentResource < ApplicationResource

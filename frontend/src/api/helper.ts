@@ -5,5 +5,6 @@ export function getAxiosParams(employeeParams: EmployeeParams) {
   if (employeeParams["filter[name]"]) params.append('filter[name]', employeeParams["filter[name]"])
   if (employeeParams["sort"]) params.append('sort', employeeParams["sort"])
   if (employeeParams["page[number]"]) params.append('page[number]', employeeParams["page[number]"].toString())
+  params.append('include', 'department')
   return params
 }
