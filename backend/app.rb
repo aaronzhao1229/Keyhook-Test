@@ -33,6 +33,7 @@ class EmployeeResource < ApplicationResource
   end
 
   sort :first_name, :last_name, :age, :position
+  paginate
 end
 
 class DepartmentResource < ApplicationResource
