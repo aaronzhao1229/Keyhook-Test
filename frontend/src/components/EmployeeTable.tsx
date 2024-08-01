@@ -6,9 +6,11 @@ import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
 import { ArrowsUpDownIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Department, DepartmentIdAndName } from '../models/department';
 
 const EmployeeTable: React.FC = () => {
   const [data, setData] = useState<Employee[]>([]);
+  const [departments, setDepartments] = useState<DepartmentIdAndName[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [sorting, setSorting] = useState<SortingState>([])
@@ -30,6 +32,18 @@ const EmployeeTable: React.FC = () => {
           setError(error.message);
         });
     };
+
+    const fetchDepartments =  () => {
+      
+      agent.Departments.getDepartments()
+        .then((departmentsData) => {
+          const departmentIdsAndNames : DepartmentIdAndName[] = departmentsData.data.map((department: Department) => {return {id: department.id, name: department.attributes.name}});
+          setDepartments(departmentIdsAndNames);
+        })
+        .catch((error) => {
+          setError(error.message);
+        });
+    };
   
   const handleFilterChange = (e : React.ChangeEvent<HTMLInputElement>) => {
     setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
@@ -38,8 +52,11 @@ const EmployeeTable: React.FC = () => {
 
   useEffect(() => {
     fetchEmployees({include: 'department'})
+    fetchDepartments()
     setLoading(false)
   }, []);
+
+  console.log(departments)
 
   
   // define columns

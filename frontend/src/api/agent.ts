@@ -12,8 +12,13 @@ const Employees = {
   getEmployees: (params: URLSearchParams) => requests.get(`employees`, params),
 }
 
+const Departments = {
+  getDepartments: () => requests.get(`departments`),
+}
+
 const agent = {
-  Employees
+  Employees,
+  Departments
 }
 
 export default agent
