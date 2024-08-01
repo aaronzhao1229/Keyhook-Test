@@ -13,6 +13,7 @@ export const Filter = ({columnFilters, setColumnFilters}: Props) => {
   const onFilterChange = (id, value) => setColumnFilters({id, value});
   return <input
         type="text"
+        id='name'
         // value={globalFilter || ''}
         // value={firstName || ''}
         onChange={e => onFilterChange('first_name', e.target.value)}

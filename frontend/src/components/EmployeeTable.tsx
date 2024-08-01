@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from 'react';
 import { useReactTable, createColumnHelper,  getCoreRowModel, flexRender, ColumnFiltersState, getFilteredRowModel } from '@tanstack/react-table';
 
-import { apiResponse, Employee } from '../models/employee';
+import { apiResponse, Employee, EmployeeParams } from '../models/employee';
 import agent from '../api/agent';
 import { Filter } from './Filter';
 import { getAxiosParams } from '../api/helper';
@@ -12,6 +12,23 @@ const EmployeeTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [employeePramas, setEmployeePramas] = useState<EmployeeParams>({include: 'department'});
+  console.log(employeePramas)
+
+  const handleFilterChange = (e : React.ChangeEvent<HTMLInputElement>) => {
+    setEmployeePramas(prev => ({...prev, 'filter[name]': e.target.value}))
+    const params = getAxiosParams({...employeePramas, 'filter[name]': e.target.value})
+    agent.Employees.getEmployees(params).then((employeesData) => {
+      const employees  = employeesData.data.map((employee : apiResponse) => {
+       
+        return employee.attributes
+      })
+      setData(employees);
+      setLoading(false);
+    }).catch((error) => {
+      setError(error.message);
+    })
+  }
 
   useEffect(() => {
     const params = getAxiosParams({'filter[name]': 'da', 'sort': 'age', 'page[number]': 2, 'include': 'department'})
@@ -27,7 +44,7 @@ const EmployeeTable: React.FC = () => {
     })
   }, []);
 
-  // console.log(data)
+  console.log(data)
 
   
 
@@ -83,7 +100,17 @@ const EmployeeTable: React.FC = () => {
   // console.log(columnFilters)
   return (
     <div className="p-4">
-      <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/>
+      {/* <Filter columnFilters={columnFilters} setColumnFilters={setColumnFilters}/> */}
+      <div>
+        <input
+          type="text"
+          id='filter[name]'
+          value={employeePramas["filter[name]"] || ''}
+          onChange={handleFilterChange}
+          placeholder="Search name..."
+          className="mb-4 p-2 border rounded w-full"
+          />
+        </div>
       <table>
         <thead>
           {table.getHeaderGroups().map(headerGroup => (
