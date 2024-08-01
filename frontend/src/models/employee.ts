@@ -36,6 +36,7 @@ export interface Employee {
 
 export interface EmployeeParams {
   'filter[name]'?: string
+  'filter[department_id]'?: string
   'sort'?: string
   'page[number]'?: number
   'include': string
