@@ -11,7 +11,6 @@ interface Props {
 }
 export const Dropdown = ({options, handleSelectChange}: Props) => {
   
-
     return (
       <div className="w-full max-w-96 px-4 mb-3">
         <Field>
@@ -20,11 +19,9 @@ export const Dropdown = ({options, handleSelectChange}: Props) => {
               className={clsx(
                 'mt-3 h-10 block w-full appearance-none rounded-lg border bg-white/5 py-1.5 px-3 text-sm/6',
                 'focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25',
-                // Make the text of each option black on Windows
                 '*:text-black'
               )}
-              onChange={handleSelectChange} // Handle change event
-              
+              onChange={handleSelectChange}
             >
               {options.map((option) => (
                 <option key={option.id} value={option.id}>
